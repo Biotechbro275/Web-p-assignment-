@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshMart Supermarket - Admin Dashboard</title>
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --primary-light: #d1fae5;
+            --secondary: #f3f4f6;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --white: #ffffff;
+            --border: #e5e7eb;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --success: #16a34a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        aside {
+            width: 260px;
+            background-color: var(--white);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 10;
+        }
+
+        .logo-area {
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo-icon {
+            font-size: 24px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 20px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-grow: 1;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .sidebar-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Main Wrapper */
+        .main-wrapper {
+            margin-left: 260px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            height: 70px;
+            background-color: var(--white);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--secondary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            width: 320px;
+            gap: 10px;
+        }
+
+        .search-bar input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .user-info .name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-info .role {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Dashboard Content */
+        .content {
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .page-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .page-title p {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background-color: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            font-size: 18px;
+            padding: 8px;
+            background-color: var(--secondary);
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        .stat-trend {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .trend-up { color: var(--success); }
+        .trend-down { color: var(--danger); }
+
+        /* Dashboard Grid Sections */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .card-action {
+            font-size: 13px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .card-action:hover {
+            text-decoration: underline;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-success { background-color: var(--primary-light); color: var(--primary-dark); }
+        .badge-warning { background-color: #fef3c7; color: var(--warning); }
+        .badge-danger { background-color: #fee2e2; color: var(--danger); }
+
+        /* Low Stock Items List */
+        .stock-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .stock-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stock-item:last-child {
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .stock-info .item-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .stock-info .item-category {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .stock-quantity {
+            text-align: right;
+        }
+
+        .stock-quantity .qty {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--danger);
+        }
+
+        .stock-quantity .limit {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <aside>
+        <div class="logo-area">
+            <span class="logo-icon">🛒</span>
+            <span class="logo-text">FreshMart Admin</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">📊 Dashboard</a></li>
+            <li><a href="#">📦 Inventory</a></li>
+            <li><a href="#">🧾 Orders & Sales</a></li>
+            <li><a href="#">👥 Customers</a></li>
+            <li><a href="#">🏷️ Promotions</a></li>
+            <li><a href="#">📈 Reports</a></li>
+            <li><a href="#">⚙️ Settings</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>FreshMart v2.4.1</p>
+        </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper">
+        
+        <!-- Header -->
+        <header>
+            <div class="search-bar">
+                <span>🔍</span>
+                <input type="text" placeholder="Search products, orders, customers...">
+            </div>
+            <div class="user-profile">
+                <div class="avatar">JM</div>
+                <div class="user-info">
+                    <div class="name">Jane Manager</div>
+                    <div class="role">Store Supervisor</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Body -->
+        <div class="content">
+            
+            <!-- Page Title -->
+            <div class="page-title">
+                <h1>Store Dashboard</h1>
+                <p>Welcome back! Here's what's happening at FreshMart today.</p>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span>Daily Revenue</span>
+                        <span class="stat-icon">💰</span>
+                    </div>
+                    <div class="stat-value">$12,450.80</div>
+                    <div class="stat-trend trend-up">↑ +8.4% from yesterday</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span>Total Orders</span>
+                        <span class="stat-icon">🛍️</span>
+                    </div>
+                    <div class="stat-value">342</div>
+                    <div class="stat-trend trend-up">↑ +12% from yesterday</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span>Active Customers</span>
+                        <span class="stat-icon">👥</span>
+                    </div>
+                    <div class="stat-value">1,280</div>
+                    <div class="stat-trend trend-up">↑ +3.1% this week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span>Low Stock Alerts</span>
+                        <span class="stat-icon">⚠️</span>
+                    </div>
+                    <div class="stat-value" style="color: var(--danger);">14</div>
+                    <div class="stat-trend trend-down">Requires attention</div>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid: Tables & Low Stock Alerts -->
+            <div class="dashboard-grid">
+                
+                <!-- Recent Orders Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Recent Transactions</h2>
+                        <a href="#" class="card-action">View All</a>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#ORD-9821</td>
+                                <td>Sarah Jenkins</td>
+                                <td>6 items</td>
+                                <td>$48.50</td>
+                                <td><span class="badge badge-success">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-9820</td>
+                                <td>Michael Chang</td>
+                                <td>14 items</td>
+                                <td>$124.90</td>
+                                <td><span class="badge badge-success">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-9819</td>
+                                <td>Amanda Ross</td>
+                                <td>2 items</td>
+                                <td>$15.20</td>
+                                <td><span class="badge badge-warning">Processing</span></td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-9818</td>
+                                <td>David Miller</td>
+                                <td>9 items</td>
+                                <td>$67.45</td>
+                                <td><span class="badge badge-success">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>#ORD-9817</td>
+                                <td>Emily Blunt</td>
+                                <td>4 items</td>
+                                <td>$32.10</td>
+                                <td><span class="badge badge-danger">Cancelled</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Low Stock Inventory Alert Widget -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Low Stock Warnings</h2>
+                        <a href="#" class="card-action">Manage Inventory</a>
+                    </div>
+                    <div class="stock-list">
+                        <div class="stock-item">
+                            <div class="stock-info">
+                                <div class="item-name">Organic Whole Milk 1L</div>
+                                <div class="item-category">Dairy & Eggs</div>
+                            </div>
+                            <div class="stock-quantity">
+                                <div class="qty">3 left</div>
+                                <div class="limit">Min: 15</div>
+                            </div>
+                        </div>
+                        <div class="stock-item">
+                            <div class="stock-info">
+                                <div class="item-name">Avocado (Hass) - Each</div>
+                                <div class="item-category">Fresh Produce</div>
+                            </div>
+                            <div class="stock-quantity">
+                                <div class="qty">5 left</div>
+                                <div class="limit">Min: 30</div>
+                            </div>
+                        </div>
+                        <div class="stock-item">
+                            <div class="stock-info">
+                                <div class="item-name">Sourdough Artisan Bread</div>
+                                <div class="item-category">Bakery</div>
+                            </div>
+                            <div class="stock-quantity">
+                                <div class="qty">2 left</div>
+                                <div class="limit">Min: 10</div>
+                            </div>
+                        </div>
+                        <div class="stock-item">
+                            <div class="stock-info">
+                                <div class="item-name">Free Range Eggs (Dozen)</div>
+                                <div class="item-category">Dairy & Eggs</div>
+                            </div>
+                            <div class="stock-quantity">
+                                <div class="qty">4 left</div>
+                                <div class="limit">Min: 20</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
